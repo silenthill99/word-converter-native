@@ -1,24 +1,16 @@
-import {StyleSheet, TextInput, View} from "react-native";
+// noinspection JSDeprecatedSymbols,XmlDeprecatedElement
+
+import {Text, View} from "react-native";
+import {TextStyles} from "@/hook/TextStyles";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 export default function Index() {
     return (
-        <View
-            style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-            }}
-        >
-            <TextInput style={styles.form}/>
-        </View>
+        <SafeAreaView style={{backgroundColor: "#fafafa", flex: 1}}>
+            <View style={{height: 41, backgroundColor: "#4eb3be", justifyContent: "center"}}>
+                <Text style={[TextStyles.h1, {color: "white"}]}>WordConverter</Text>
+            </View>
+            <Text>Page d&#39;accueil</Text>
+        </SafeAreaView>
     );
 }
-
-const styles = StyleSheet.create({
-    form: {
-        height: 25,
-        width: '25%',
-        backgroundColor: "white",
-        borderWidth: 2,
-    }
-})
