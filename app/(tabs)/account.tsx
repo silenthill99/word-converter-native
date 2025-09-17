@@ -1,11 +1,9 @@
 import React from 'react';
-import {SafeAreaView} from "react-native-safe-area-context";
+import PageLayout from "@/layouts/PageLayout";
 
 const Account = () => {
     return (
-        <SafeAreaView>
-
-        </SafeAreaView>
+        <PageLayout></PageLayout>
     );
 };
 
