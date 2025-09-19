@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import PageLayout from "@/layouts/PageLayout";
-import {Text, TextInput, TouchableOpacity, View, StyleSheet, Alert, ActivityIndicator} from "react-native";
+import {Text, TextInput, TouchableOpacity, View, StyleSheet, Alert, ActivityIndicator, Dimensions} from "react-native";
+import {colors} from "@/hook/Colors";
 
 const Account = () => {
 
@@ -18,24 +19,45 @@ const Account = () => {
         }
         setLoginLoading(true);
         try {
-            const formData = new FormData();
+            // Essayons avec URLSearchParams (form-urlencoded)
+            const formData = new URLSearchParams();
             formData.append("email", loginData.email);
             formData.append("password", loginData.password);
+
+            console.log("Tentative de connexion avec:", loginData.email);
+
             const response = await fetch("https://devflorian.cornillet.com/login", {
                 method: "POST",
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Accept': 'application/json',
+                },
                 body: formData
             })
 
+            console.log("Réponse reçue:", response.status, response.statusText);
+
+            if (!response.ok) {
+                console.error('Erreur HTTP:', response.status, response.statusText);
+                Alert.alert('Erreur', `Erreur serveur: ${response.status}`);
+                return;
+            }
+
+            console.log("Response OK, parsing JSON...");
             const responseData = await response.json();
+            console.log("Response data:", responseData);
+
             if (responseData.success) {
+                console.log("Login successful!")
                 setLoggedIn(true);
                 setLoginData({email: '', password: ''});
             } else {
-                Alert.alert('Erreur', responseData.message);
+                console.log("Login failed:", responseData.message);
+                Alert.alert('Erreur', responseData.message || 'Erreur de connexion');
             }
         } catch (error) {
-            Alert.alert('Erreur', "Erreur de connexion");
-            console.error(error);
+            console.error('Erreur de connexion:', error);
+            Alert.alert('Erreur', "Impossible de se connecter au serveur");
         } finally {
             setLoginLoading(false)
         }
@@ -94,19 +116,58 @@ const Account = () => {
 
 const styles = StyleSheet.create({
     title: {
-
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: 30,
+        textAlign: 'center'
     },
     email: {
-
+        borderWidth: 1,
+        borderColor:'#ddd',
+        borderRadius: 8,
+        padding: 12,
+        marginBottom: 15,
+        fontSize: 16,
+        backgroundColor: "white",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+        elevation: 2,
     },
     input: {
-
+        borderWidth: 1,
+        borderColor:'#ddd',
+        borderRadius: 8,
+        padding: 12,
+        marginBottom: 20,
+        fontSize: 16,
+        backgroundColor: 'white',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+        elevation: 2,
     },
     button: {
-
+        backgroundColor: colors.mainColor,
+        borderRadius: 8,
+        padding: 15,
+        alignItems: "center",
+        justifyContent: "center",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 3,
+        width: Dimensions.get('window').width > 768 ? '25%' : '100%',
+        minHeight: 50
     },
     buttonText: {
-
+        color: 'white',
+        fontSize: 16,
+        fontWeight: '600'
     }
 })
 
