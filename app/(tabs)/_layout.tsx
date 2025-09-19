@@ -1,8 +1,8 @@
 import React from 'react';
 import {Tabs} from "expo-router";
 import {IconSymbol} from "@/app-example/components/ui/icon-symbol";
-import ProfileIcon from "@/components/ProfileIcon";
-import EmailIcon from "@/components/EmailIcon";
+import ProfileIcon from "@/components/icons/ProfileIcon";
+import EmailIcon from "@/components/icons/EmailIcon";
 
 const RootLayout = () => {
     return (
