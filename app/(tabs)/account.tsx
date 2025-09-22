@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import PageLayout from "@/layouts/PageLayout";
 import {Text, TextInput, TouchableOpacity, View, StyleSheet, Alert, ActivityIndicator, Dimensions} from "react-native";
 import {colors} from "@/hook/Colors";
+import RegisterForm from "@/components/RegisterForm";
 
 const Account = () => {
 
@@ -108,6 +109,8 @@ const Account = () => {
                             <Text style={styles.buttonText}>Se connecter</Text>
                         )}
                     </TouchableOpacity>
+
+                    <RegisterForm/>
                 </View>
             )}
         </PageLayout>
