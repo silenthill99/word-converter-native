@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
+import {Alert, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import {colors} from "@/hook/Colors";
 
 const RegisterForm = () => {
 
-    const [isRegister, setRegister] = useState(false);
+    const [, setRegister] = useState(false);
 
     const [registerData, setRegisterData] = useState({
         email: "",
@@ -14,7 +14,7 @@ const RegisterForm = () => {
         password_confirmation: ""
     })
 
-    const [registerLoading, setRegisterLoading] = useState(false);
+    const [, setRegisterLoading] = useState(false);
 
     const handleRequest = async () => {
         if (!registerData.email || !registerData.email_confirmation || !registerData.pseudo || !registerData.password || !registerData.password_confirmation) {
@@ -82,7 +82,7 @@ const RegisterForm = () => {
 
     return (
         <View style={styles.main}>
-            <Text style={styles.title}>Formulaire d&#39;inscription</Text>
+            <Text style={styles.title}>Créer un compte</Text>
             <TextInput style={styles.input} value={registerData.email} onChangeText={(text) => setRegisterData({
                 ...registerData,
                 email: text
@@ -124,13 +124,14 @@ const styles = StyleSheet.create({
     input: {
         borderWidth: 1,
         borderColor: "#ddd",
-        padding: 12,
+        padding: 10,
         backgroundColor: "white",
         borderRadius: 8,
         marginBottom: 15,
         fontSize: 16,
         boxShadow: "0px 2px 2px rgba(0, 0, 0, 0.1)",
-        elevation: 2
+        elevation: 2,
+        width: "100%"
     },
     button: {
         backgroundColor: colors.mainColor,
@@ -140,7 +141,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         boxShadow: "0px 2px 3px rgba(0, 0, 0, 0.2)",
         elevation: 3,
-        width: Dimensions.get('window').width > 768 ? '25%' : '100%',
+        // width: Dimensions.get('window').width > 768 ? '25%' : '100%',
         minHeight: 50
     }
 })
