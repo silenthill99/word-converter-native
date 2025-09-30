@@ -1,9 +1,21 @@
 import API_CONFIG from "@/config/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface ApiResponse<T = any> {
     success: boolean;
     data?: T;
     message?: string;
+    token?: string;
+}
+
+interface AuthResponse {
+    success: boolean;
+    token?: string;
+    message?: string;
+    data?: {
+        user?: any;
+        token?: string;
+    }
 }
 
 interface LoginData {
@@ -20,20 +32,57 @@ interface RegisterData {
 
 class ApiService {
     private baseUrl: string;
+    private readonly TOKEN_KEY = 'auth_token';
     constructor() {
         this.baseUrl = API_CONFIG.BASE_URL
     }
 
-    private async makeRequest<T>(endpoints: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
+    // Gestion des token
+    async saveToken(token: string): Promise<void> {
+        try {
+            await AsyncStorage.setItem(this.TOKEN_KEY, token);
+        } catch (error) {
+            console.error('Erreur sauvegarde token:', error);
+        }
+    }
+
+    async getToken(): Promise<string | null> {
+        try {
+            return await AsyncStorage.getItem(this.TOKEN_KEY);
+        } catch (error) {
+            console.error('Erreur récupération token:', error);
+            return null;
+        }
+    }
+
+    async removeToken(): Promise<void> {
+        try {
+            await AsyncStorage.removeItem(this.TOKEN_KEY);
+        } catch (error) {
+            console.error('Erreur suppression token:', error);
+        }
+    }
+
+    private async makeRequest<T>(endpoints: string, options: RequestInit = {}, requiresAuth: boolean = false): Promise<ApiResponse<T>> {
         try {
             const url = `${this.baseUrl}${endpoints}`;
+            //Préparer les headers
+            let headers : Record<string, string> = {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                ...options.headers as Record<string, string>
+            };
+
+            // Ajouter le token si l'authentification est requise
+            if (requiresAuth) {
+                const token = await this.getToken();
+                if (token) {
+                    headers["Authorization"] = `Bearer ${token}`;
+                }
+            }
             const response = await fetch(url, {
                 ...options,
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "Accept": "application/json",
-                    ...options.headers,
-                }
+                headers
             });
             console.log(`API Request: ${url}`, response.status, response.statusText);
 
@@ -54,29 +103,48 @@ class ApiService {
         }
     }
 
-    async login(loginData: LoginData): Promise<ApiResponse> {
-        const formData = new URLSearchParams();
-        formData.append("email", loginData.email);
-        formData.append("password", loginData.password);
-
-        return this.makeRequest(API_CONFIG.ENDPOINTS.LOGIN, {
+    async login(loginData: LoginData): Promise<AuthResponse> {
+        const result = await this.makeRequest(API_CONFIG.ENDPOINTS.LOGIN, {
             method: "POST",
-            body: formData,
-        })
+            body: JSON.stringify(loginData),
+        }) as AuthResponse;
+
+        // Sauvegarder le token si la connexion réussit
+        if (result.success ) {
+            const token = result.token || result.data?.token;
+            if (token) {
+                await this.saveToken(token);
+            }
+        }
+
+        return result;
     }
 
-    async register(registerData: RegisterData): Promise<ApiResponse> {
-        const formData = new URLSearchParams();
-        Object.entries(registerData).forEach(([key, value]) => {
-            formData.append(key, value);
-        });
-
-        return this.makeRequest(API_CONFIG.ENDPOINTS.REGISTER, {
+    async register(registerData: RegisterData): Promise<AuthResponse> {
+        const result = await this.makeRequest<AuthResponse>(API_CONFIG.ENDPOINTS.REGISTER, {
             method: "POST",
-            body: formData,
-        })
+            body: JSON.stringify(registerData),
+        }) as AuthResponse;
+
+        // Sauvegarder le token si l'inscription réussit
+        if (result.success ) {
+            const token = result.token || result.data?.token;
+            if (token) {
+                await this.saveToken(token);
+            }
+        }
+
+        return result;
     }
 
+    async logout(): Promise<void> {
+        await this.removeToken();
+    }
+
+    async isAuthenticated(): Promise<boolean> {
+        const token = await this.getToken();
+        return !!token;
+    }
     async testConnection(): Promise<boolean> {
         try {
             const response = await fetch(this.baseUrl)
