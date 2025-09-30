@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {StyleSheet, TextInput, View, Text, TouchableOpacity, Alert} from "react-native";
 import {colors} from "@/hook/Colors";
 import {useAuth} from "@/contexts/AuthContext";
+import { useRouter } from "expo-router";
 
 const LoginForm = () => {
 
@@ -11,7 +12,7 @@ const LoginForm = () => {
     })
 
     const {login, isLoading} = useAuth();
-
+    const router = useRouter();
 
     const handleLogin = async () => {
         if (!loginData.email || !loginData.password) {
@@ -22,6 +23,7 @@ const LoginForm = () => {
         const response = await login(loginData.email, loginData.password);
         if (response.success) {
             Alert.alert("Succès", "Connexion réussie")
+            router.replace('/(tabs)')
         } else {
             Alert.alert("Erreur", response.message || "Erreur de connexion")
         }
@@ -40,6 +42,7 @@ const LoginForm = () => {
                 value={loginData.password}
                 onChangeText={(text) => setLoginData({...loginData, password: text})}
                 placeholder={"Votre mot de passe"}
+                secureTextEntry
                 style={styles.input}
             />
             <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={isLoading}>

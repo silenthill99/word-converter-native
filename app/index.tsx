@@ -1,11 +1,15 @@
 import React, {PropsWithChildren, useEffect, useState} from 'react';
 import {SafeAreaView} from "react-native-safe-area-context";
-import {Dimensions, ScrollView, StyleSheet, View} from "react-native";
+import {Dimensions, ScrollView, StyleSheet, Text, View} from "react-native";
 import LoginForm from "@/components/LoginForm";
 import RegisterForm from "@/components/RegisterForm";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "expo-router";
 
 const Index = () => {
     const [screenData, setScreenData] = useState(Dimensions.get('window'));
+    const { isAuthenticated, isLoading } = useAuth()
+    const router = useRouter();
 
     useEffect(() => {
         const onChange = (result: any) => {
@@ -15,6 +19,12 @@ const Index = () => {
         const subscription = Dimensions.addEventListener('change', onChange);
         return () => subscription?.remove();
     }, []);
+
+    useEffect(() => {
+        if (!isLoading && isAuthenticated) {
+            router.replace('/(tabs)')
+        }
+    }, [isAuthenticated, isLoading, router]);
 
     useEffect(() => {
         fetch("https://devflorian.cornillet.com")
@@ -31,6 +41,19 @@ const Index = () => {
     }, [])
     const isTablet = screenData.width > 768;
 
+    if (isLoading) {
+        return (
+            <SafeAreaView style={styles.main}>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <Text>Chargement...</Text>
+                </View>
+            </SafeAreaView>
+        )
+    }
+
+    if (isAuthenticated) {
+        return null;
+    }
     return (
         <SafeAreaView style={styles.main}>
             <ScrollView contentContainerStyle={styles.scrollContainer}>

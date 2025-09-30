@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {Alert, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import {colors} from "@/hook/Colors";
 import {useAuth} from "@/contexts/AuthContext";
+import { useRouter } from "expo-router";
 
 const RegisterForm = () => {
 
@@ -13,6 +14,7 @@ const RegisterForm = () => {
     })
 
     const {register, isLoading} = useAuth();
+    const router = useRouter();
 
     const handleRequest = async () => {
         if (!registerData.email || !registerData.email_confirmation || !registerData.password || !registerData.password_confirmation) {
@@ -39,6 +41,7 @@ const RegisterForm = () => {
 
         if (result.success) {
             Alert.alert("Succès", "Compte créé avec succès !");
+            router.replace('/(tabs)')
             setRegisterData({
                 email: "",
                 email_confirmation: "",
