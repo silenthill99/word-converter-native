@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Alert, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import {colors} from "@/hook/Colors";
+import ApiService from "@/services/apiService";
 
 const RegisterForm = () => {
 
@@ -9,7 +10,6 @@ const RegisterForm = () => {
     const [registerData, setRegisterData] = useState({
         email: "",
         email_confirmation: "",
-        pseudo: "",
         password: "",
         password_confirmation: ""
     })
@@ -17,62 +17,42 @@ const RegisterForm = () => {
     const [, setRegisterLoading] = useState(false);
 
     const handleRequest = async () => {
-        if (!registerData.email || !registerData.email_confirmation || !registerData.pseudo || !registerData.password || !registerData.password_confirmation) {
-            Alert.alert("Erreur", "Veuillez remplir tout les champs");
+        if (!registerData.email || !registerData.email_confirmation || !registerData.password || !registerData.password_confirmation) {
+            Alert.alert("Erreur", "Veuillez remplir tous les champs");
+            return;
+        }
+
+        if (registerData.email !== registerData.email_confirmation) {
+            Alert.alert("Erreur", "Les adresses mail ne correspondent pas");
+            return;
+        }
+
+        if (registerData.password !== registerData.password_confirmation) {
+            Alert.alert("Erreur", "Les mots de passe ne correspondent pas");
             return;
         }
         setRegisterLoading(true);
+
         try {
-            const formData = new URLSearchParams();
-            formData.append("email", registerData.email);
-            formData.append("email_confirmation", registerData.email_confirmation);
-            formData.append("pseudo", registerData.pseudo);
-            formData.append("password", registerData.password);
-            formData.append("password_confirmation", registerData.password_confirmation);
+            const result = await ApiService.register(registerData);
 
-            console.log("Tentative de création de compte avec " + registerData.email);
-            console.log("Données envoyées:", Object.fromEntries(formData));
-
-            const response = await fetch('https://devflorian.cornillet.com/register', {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    "Accept": 'application/json',
-                },
-                body: formData
-            })
-
-            console.log("Réponse reçue:", response.status, response.statusText);
-
-            if (!response.ok) {
-                console.error('Erreur HTTP:', response.status, response.statusText);
-                Alert.alert('Erreur', `Erreur serveur: ${response.status}`);
-                return;
-            }
-
-            console.log("Response OK, parsing JSON...");
-            const responseData = await response.json();
-            console.log("Response data:", responseData);
-
-            if (responseData.success) {
-                console.log("Compte créé avec succès !");
-                setRegister(true)
+            if (result.success) {
+                Alert.alert("Succès", "Compte créé avec succès !");
+                setRegister(true);
                 setRegisterData({
                     email: "",
                     email_confirmation: "",
-                    pseudo: "",
                     password: "",
                     password_confirmation: ""
-                })
+                });
             } else {
-                console.log('Register failed : ' + responseData.message);
-                Alert.alert('Erreur', responseData.message || 'Erreur de connexion');
+                Alert.alert('Erreur', result.message || "Erreur lors de la création du compte");
             }
         } catch (error) {
             console.error('Erreur de connexion:', error);
             Alert.alert('Erreur', "Impossible de se connecter au serveur");
         } finally {
-            setRegisterLoading(false)
+            setRegisterLoading(false);
         }
     }
 
@@ -91,10 +71,6 @@ const RegisterForm = () => {
                 ...registerData,
                 email_confirmation: text
             })} placeholder={"Confirmez votre adresse mail"}/>
-            <TextInput style={styles.input} value={registerData.pseudo} onChangeText={(text) => setRegisterData({
-                ...registerData,
-                pseudo: text
-            })} placeholder={"Votre pseudo"}/>
             <TextInput style={styles.input} value={registerData.password} onChangeText={(text) => setRegisterData({
                 ...registerData,
                 password: text

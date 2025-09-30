@@ -61,7 +61,8 @@ export default Index;
 const styles = StyleSheet.create({
     main: {
         flex: 1,
-        backgroundColor: 'skyblue'
+        backgroundColor: 'skyblue',
+        justifyContent: "center",
     },
     scrollContainer: {
         flexGrow: 1,
