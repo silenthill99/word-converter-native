@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {StyleSheet, TextInput, View, Text, TouchableOpacity, Alert} from "react-native";
 import {colors} from "@/hook/Colors";
-import ApiService from '@/services/apiService';
+import {useAuth} from "@/contexts/AuthContext";
 
 const LoginForm = () => {
 
@@ -10,7 +10,8 @@ const LoginForm = () => {
         password: '',
     })
 
-    const [loading, setLoading] = useState(false);
+    const {login, isLoading} = useAuth();
+
 
     const handleLogin = async () => {
         if (!loginData.email || !loginData.password) {
@@ -18,18 +19,11 @@ const LoginForm = () => {
             return;
         }
 
-        setLoading(true);
-        try {
-            const response = await ApiService.login(loginData);
-            if (response.success) {
-                Alert.alert("Succès", "Connexion réussie")
-            } else {
-                Alert.alert("Erreur", response.message || "Erreur de connexion")
-            }
-        } catch (error) {
-            Alert.alert("Erreur", "Une erreur inattendue s'est produite");
-        } finally {
-            setLoading(false);
+        const response = await login(loginData.email, loginData.password);
+        if (response.success) {
+            Alert.alert("Succès", "Connexion réussie")
+        } else {
+            Alert.alert("Erreur", response.message || "Erreur de connexion")
         }
     }
 
@@ -48,7 +42,7 @@ const LoginForm = () => {
                 placeholder={"Votre mot de passe"}
                 style={styles.input}
             />
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={isLoading}>
                 <Text>Se connecter</Text>
             </TouchableOpacity>
         </View>

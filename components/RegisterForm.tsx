@@ -1,11 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Alert, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import {colors} from "@/hook/Colors";
-import ApiService from "@/services/apiService";
+import {useAuth} from "@/contexts/AuthContext";
 
 const RegisterForm = () => {
-
-    const [, setRegister] = useState(false);
 
     const [registerData, setRegisterData] = useState({
         email: "",
@@ -14,7 +12,7 @@ const RegisterForm = () => {
         password_confirmation: ""
     })
 
-    const [, setRegisterLoading] = useState(false);
+    const {register, isLoading} = useAuth();
 
     const handleRequest = async () => {
         if (!registerData.email || !registerData.email_confirmation || !registerData.password || !registerData.password_confirmation) {
@@ -31,34 +29,26 @@ const RegisterForm = () => {
             Alert.alert("Erreur", "Les mots de passe ne correspondent pas");
             return;
         }
-        setRegisterLoading(true);
 
-        try {
-            const result = await ApiService.register(registerData);
+        const result = await register(
+            registerData.email,
+            registerData.email_confirmation,
+            registerData.password,
+            registerData.password_confirmation
+        );
 
-            if (result.success) {
-                Alert.alert("Succès", "Compte créé avec succès !");
-                setRegister(true);
-                setRegisterData({
-                    email: "",
-                    email_confirmation: "",
-                    password: "",
-                    password_confirmation: ""
-                });
-            } else {
-                Alert.alert('Erreur', result.message || "Erreur lors de la création du compte");
-            }
-        } catch (error) {
-            console.error('Erreur de connexion:', error);
-            Alert.alert('Erreur', "Impossible de se connecter au serveur");
-        } finally {
-            setRegisterLoading(false);
+        if (result.success) {
+            Alert.alert("Succès", "Compte créé avec succès !");
+            setRegisterData({
+                email: "",
+                email_confirmation: "",
+                password: "",
+                password_confirmation: ""
+            });
+        } else {
+            Alert.alert('Erreur', result.message || "Erreur lors de la création du compte");
         }
     }
-
-    useEffect(() => {
-        fetch("https://devflorian.cornillet.com/register").then(response => response.json())
-    }, []);
 
     return (
         <View style={styles.main}>
@@ -79,7 +69,7 @@ const RegisterForm = () => {
                 ...registerData,
                 password_confirmation: text
             })} placeholder={"Confirmez votre mot de passe"} secureTextEntry/>
-            <TouchableOpacity onPress={handleRequest} style={styles.button}>
+            <TouchableOpacity onPress={handleRequest} style={styles.button} disabled={isLoading}>
                 <Text>Créer un compte</Text>
             </TouchableOpacity>
         </View>
