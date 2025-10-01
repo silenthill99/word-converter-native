@@ -5,6 +5,7 @@ import ProfileIcon from "@/components/icons/ProfileIcon";
 import EmailIcon from "@/components/icons/EmailIcon";
 
 const RootLayout = () => {
+
     return (
         <Tabs screenOptions={{headerShown: false}}>
             <Tabs.Screen name={'index'} options={{tabBarIcon: ({color}) => <IconSymbol size={28} name={"house.fill"} color={color} />}}/>

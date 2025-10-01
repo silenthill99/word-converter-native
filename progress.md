@@ -80,5 +80,58 @@
 - Réponses JSON avec format { success: boolean, token?: string, message?: string }
 - Support du Content-Type: application/json pour les requêtes
 
+### ✅ Système de déconnexion (logout)
+- **Backend** : Route `POST /logout` créée dans `app/routes.php` (ligne 103-110)
+  - Détruit la session et les cookies côté serveur
+  - Retourne `{"success": "Déconnexion réussie"}`
+- **Frontend** :
+  - Endpoint `/logout` ajouté dans `config/api.ts`
+  - Méthode `logout()` implémentée dans `services/apiService.ts` (ligne 140-157)
+
+#### Explications de la structure de logout() :
+1. **`try/catch/finally`** :
+   - `try` : Appel de l'API backend pour déconnecter côté serveur
+   - `catch` : Si l'appel échoue (pas de réseau, serveur down), on log l'erreur mais on ne bloque pas
+   - `finally` : Qu'importe le résultat (succès/échec), on supprime **toujours** le token local
+
+2. **Pourquoi supprimer le token même si l'API échoue ?**
+   - Scénario 1 : L'utilisateur n'a plus internet → l'API ne répond pas, mais il doit quand même être déconnecté localement
+   - Scénario 2 : Le serveur est temporairement down → même chose, on déconnecte localement
+   - UX : Quand l'utilisateur clique sur "Déconnexion", il s'attend à être déconnecté, peu importe l'état du serveur
+
+3. **Vérification `if (token)`** :
+   - On vérifie d'abord que le token existe avant d'appeler l'API
+   - Évite une requête inutile si l'utilisateur est déjà déconnecté
+
+### ✅ Bouton de déconnexion créé
+- Bouton créé dans `app/(tabs)/account.tsx` avec effet de survol
+- Utilise `Pressable` avec `onHoverIn`/`onHoverOut` pour l'effet de soulignement au survol
+- Appelle `logout()` du contexte d'authentification
+- Style : texte rouge qui se souligne au survol
+
+### 🔧 En cours : Redirection après déconnexion
+**Ce qui fonctionne :**
+- ✅ API backend `/logout` accessible et fonctionnelle
+- ✅ Méthode `logout()` dans `apiService.ts` correcte (appelle l'API + supprime le token local)
+- ✅ Token correctement supprimé après déconnexion
+- ✅ État `isAuthenticated` passe bien à `false` dans le contexte
+- ✅ Navigation conditionnelle implémentée dans `app/_layout.tsx` avec `useSegments`
+
+**Ce qui ne fonctionne pas :**
+- ❌ Redirection vers la landing page après déconnexion
+- L'utilisateur reste bloqué dans `(tabs)` même après déconnexion
+
+**Fichiers modifiés pendant cette session :**
+- `config/api.ts` : ajout de l'endpoint LOGOUT
+- `services/apiService.ts` : méthode `logout()` complète
+- `app/(tabs)/account.tsx` : bouton de déconnexion avec effet hover
+- `app/_layout.tsx` : navigation conditionnelle avec `useSegments` et `RootLayoutNav`
+- `app/index.tsx` : suppression du useEffect de redirection (géré par _layout maintenant)
+- `app/(tabs)/_layout.tsx` : nettoyé (plus de useEffect de redirection)
+
 ## 📋 À faire demain :
-- Implémenter le système de déconnexion (logout)
+- **Résoudre le problème de redirection après déconnexion**
+  - Le token est bien supprimé
+  - L'état `isAuthenticated` est bien mis à jour
+  - Mais la navigation vers `/` ne fonctionne pas depuis `(tabs)`
+  - Peut-être essayer une approche différente (Redirect component, navigation guards, etc.)

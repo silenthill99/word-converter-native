@@ -1,14 +1,28 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import PageLayout from "@/layouts/PageLayout";
-import {StyleSheet, Dimensions} from "react-native";
-import {colors} from "@/hook/Colors";
+import {StyleSheet, Text, Pressable} from "react-native";
+import { useAuth } from "@/contexts/AuthContext";
+import {router} from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Account = () => {
 
+    const [isHovered, setHovered] = useState(false);
+    const { logout} = useAuth();
+
+    const handleLogout = async () => {
+        await logout();
+    }
 
     return (
         <PageLayout>
-
+            <Pressable
+                onHoverIn={() => setHovered(true)}
+                onHoverOut={() => setHovered(false)}
+                onPress={handleLogout}
+            >
+                <Text style={[styles.buttonText, isHovered && styles.buttonTextHovered]}>Se déconnecter</Text>
+            </Pressable>
         </PageLayout>
     );
 };
@@ -50,24 +64,18 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     button: {
-        backgroundColor: colors.mainColor,
-        borderRadius: 8,
-        padding: 15,
-        alignItems: "center",
-        justifyContent: "center",
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 3,
-        elevation: 3,
-        width: Dimensions.get('window').width > 768 ? '25%' : '100%',
-        minHeight: 50
+        backgroundColor: 'red',
+        minWidth: 0
     },
+
     buttonText: {
-        color: 'white',
-        fontSize: 16,
-        fontWeight: '600'
+        color: 'red'
+    },
+
+    buttonTextHovered: {
+        textDecorationLine: "underline"
     }
+
 })
 
 export default Account;

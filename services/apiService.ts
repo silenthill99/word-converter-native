@@ -138,7 +138,18 @@ class ApiService {
     }
 
     async logout(): Promise<void> {
-        await this.removeToken();
+        try {
+            const token = await this.getToken()
+            if (token) {
+                await this.makeRequest<AuthResponse>(API_CONFIG.ENDPOINTS.LOGOUT, {
+                    method: "POST"
+                }, true)
+            }
+        } catch (error) {
+            console.error('Erreur suppression token : ', error);
+        } finally {
+            await this.removeToken();
+        }
     }
 
     async isAuthenticated(): Promise<boolean> {

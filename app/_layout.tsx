@@ -1,12 +1,36 @@
-import {Stack} from "expo-router";
-import {AuthProvider} from "@/contexts/AuthContext";
+import {Stack, useRouter, useSegments} from "expo-router";
+import {AuthProvider, useAuth} from "@/contexts/AuthContext";
+import {useEffect} from "react";
+
+const RootLayoutNav = () => {
+    const { isAuthenticated, isLoading } = useAuth();
+    const segments = useSegments();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (isLoading) return;
+
+        const inTabs = segments[0] === '(tabs)';
+
+        if (!isAuthenticated && inTabs) {
+            router.replace('/')
+        } else if (isAuthenticated && !inTabs) {
+            router.replace('/(tabs)')
+        }
+    }, [isAuthenticated, isLoading, segments]);
+
+    return (
+        <Stack screenOptions={{headerShown: false}}>
+            <Stack.Screen name={'index'}/>
+            <Stack.Screen name={'(tabs)'}/>
+        </Stack>
+    )
+}
 
 export default function RootLayout() {
     return (
         <AuthProvider>
-            <Stack screenOptions={{headerShown: false}}>
-                <Stack.Screen name={'(tabs)'}/>
-            </Stack>
+            <RootLayoutNav/>
         </AuthProvider>
     );
 }

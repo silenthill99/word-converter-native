@@ -21,12 +21,6 @@ const Index = () => {
     }, []);
 
     useEffect(() => {
-        if (!isLoading && isAuthenticated) {
-            router.replace('/(tabs)')
-        }
-    }, [isAuthenticated, isLoading, router]);
-
-    useEffect(() => {
         fetch("https://devflorian.cornillet.com")
             .then(response => {
                 console.log('Status:', response.status, response.statusText);
@@ -51,9 +45,6 @@ const Index = () => {
         )
     }
 
-    if (isAuthenticated) {
-        return null;
-    }
     return (
         <SafeAreaView style={styles.main}>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
