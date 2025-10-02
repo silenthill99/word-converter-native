@@ -8,7 +8,7 @@ const PageLayout = ({children}: PropsWithChildren) => {
     return (
         <SafeAreaView style={styles.parent}>
             <View style={styles.header}>
-                <Text style={[TextStyles.h1, {color: "white"}]}>WordConverter</Text>
+                <Text style={[TextStyles.h1, {color: "white"}]}>Agricultury</Text>
             </View>
             <View style={styles.main}>
                 {children}
