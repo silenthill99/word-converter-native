@@ -37,6 +37,8 @@ const LoginForm = () => {
                 onChangeText={(text) => setLoginData({...loginData, email: text})}
                 placeholder={"Votre adresse mail"}
                 style={styles.input}
+                returnKeyType={"next"}
+                onSubmitEditing={() => {}}
             />
             <TextInput
                 value={loginData.password}
@@ -44,6 +46,8 @@ const LoginForm = () => {
                 placeholder={"Votre mot de passe"}
                 secureTextEntry
                 style={styles.input}
+                returnKeyType={"done"}
+                onSubmitEditing={handleLogin}
             />
             <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={isLoading}>
                 <Text>Se connecter</Text>

@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Alert, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import {colors} from "@/hook/Colors";
 import {useAuth} from "@/contexts/AuthContext";
-import { useRouter } from "expo-router";
+import {useRouter} from "expo-router";
 
 const RegisterForm = () => {
 
@@ -56,22 +56,55 @@ const RegisterForm = () => {
     return (
         <View style={styles.main}>
             <Text style={styles.title}>Créer un compte</Text>
-            <TextInput style={styles.input} value={registerData.email} onChangeText={(text) => setRegisterData({
-                ...registerData,
-                email: text
-            })} placeholder={"Votre email"}/>
-            <TextInput style={styles.input} value={registerData.email_confirmation} onChangeText={(text) => setRegisterData({
-                ...registerData,
-                email_confirmation: text
-            })} placeholder={"Confirmez votre adresse mail"}/>
-            <TextInput style={styles.input} value={registerData.password} onChangeText={(text) => setRegisterData({
-                ...registerData,
-                password: text
-            })} placeholder={"Votre mot de passe"} secureTextEntry/>
-            <TextInput style={styles.input} value={registerData.password_confirmation} onChangeText={(text) => setRegisterData({
-                ...registerData,
-                password_confirmation: text
-            })} placeholder={"Confirmez votre mot de passe"} secureTextEntry/>
+            <TextInput
+                style={styles.input}
+                value={registerData.email}
+                onChangeText={(text) => setRegisterData({
+                    ...registerData,
+                    email: text
+                })}
+                placeholder={"Votre email"}
+                returnKeyType={"next"}
+                onSubmitEditing={() => {
+                }}
+            />
+            <TextInput
+                style={styles.input}
+                value={registerData.email_confirmation}
+                onChangeText={(text) => setRegisterData({
+                    ...registerData,
+                    email_confirmation: text
+                })}
+                placeholder={"Confirmez votre adresse mail"}
+                returnKeyType={"next"}
+                onSubmitEditing={() => {
+                }}
+            />
+            <TextInput
+                style={styles.input}
+                value={registerData.password}
+                onChangeText={(text) => setRegisterData({
+                    ...registerData,
+                    password: text
+                })}
+                placeholder={"Votre mot de passe"}
+                secureTextEntry
+                returnKeyType={"next"}
+                onSubmitEditing={() => {
+                }}
+            />
+            <TextInput
+                style={styles.input}
+                value={registerData.password_confirmation}
+                onChangeText={(text) => setRegisterData({
+                    ...registerData,
+                    password_confirmation: text
+                })}
+                placeholder={"Confirmez votre mot de passe"}
+                secureTextEntry
+                returnKeyType={"done"}
+                onSubmitEditing={handleRequest}
+            />
             <TouchableOpacity onPress={handleRequest} style={styles.button} disabled={isLoading}>
                 <Text>Créer un compte</Text>
             </TouchableOpacity>
