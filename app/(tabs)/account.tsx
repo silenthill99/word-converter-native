@@ -1,9 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import PageLayout from "@/layouts/PageLayout";
 import {StyleSheet, Text, Pressable} from "react-native";
 import { useAuth } from "@/contexts/AuthContext";
-import {router} from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Account = () => {
 
