@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import PageLayout from "@/layouts/PageLayout";
 import {StyleSheet, Text, Pressable} from "react-native";
 import { useAuth } from "@/contexts/AuthContext";
+import { router } from 'expo-router';
 
 const Account = () => {
 
@@ -10,6 +11,7 @@ const Account = () => {
 
     const handleLogout = async () => {
         await logout();
+        router.navigate('../')
     }
 
     return (
