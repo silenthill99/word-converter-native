@@ -15,9 +15,9 @@ const RootLayoutNav = () => {
         if (!isAuthenticated && inTabs) {
             router.replace('/')
         } else if (isAuthenticated && !inTabs) {
-            router.replace('/(tabs)')
+            router.replace('/(tabs)/home')
         }
-    }, [isAuthenticated, isLoading, segments]);
+    }, [isAuthenticated, isLoading, segments, router]);
 
     return (
         <Stack screenOptions={{headerShown: false}}>

@@ -23,7 +23,7 @@ const LoginForm = () => {
         const response = await login(loginData.email, loginData.password);
         if (response.success) {
             Alert.alert("Succès", "Connexion réussie")
-            router.replace('/(tabs)')
+            router.replace('/(tabs)/home')
         } else {
             Alert.alert("Erreur", response.message || "Erreur de connexion")
         }

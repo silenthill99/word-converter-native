@@ -41,7 +41,7 @@ const RegisterForm = () => {
 
         if (result.success) {
             Alert.alert("Succès", "Compte créé avec succès !");
-            router.replace('/(tabs)')
+            router.replace('/(tabs)/home')
             setRegisterData({
                 email: "",
                 email_confirmation: "",
