@@ -8,7 +8,7 @@ const RootLayout = () => {
 
     return (
         <Tabs screenOptions={{headerShown: false}}>
-            <Tabs.Screen name={'home'} options={{tabBarIcon: ({color}) => <IconSymbol size={28} name={"house.fill"} color={color} />}}/>
+            <Tabs.Screen name={'home'} options={{tabBarIcon: ({color}) => <IconSymbol size={28} name={"house.fill"} color={color} />, title: "Page d'accueil"}}/>
             <Tabs.Screen name={'contacts'} options={{tabBarIcon: ({color}) => <EmailIcon size={28} color={color} />, title: 'Page de contacts'}}/>
             <Tabs.Screen name={'account'} options={{tabBarIcon: ({color}) => <ProfileIcon size={28} color={color}/>, title: 'Profil'}}/>
         </Tabs>

@@ -106,7 +106,7 @@ const RegisterForm = () => {
                 onSubmitEditing={handleRequest}
             />
             <TouchableOpacity onPress={handleRequest} style={styles.button} disabled={isLoading}>
-                <Text>Créer un compte</Text>
+                <Text style={{color: "white"}}>Créer un compte</Text>
             </TouchableOpacity>
         </View>
     );

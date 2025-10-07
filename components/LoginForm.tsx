@@ -50,7 +50,7 @@ const LoginForm = () => {
                 onSubmitEditing={handleLogin}
             />
             <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={isLoading}>
-                <Text>Se connecter</Text>
+                <Text style={{color: 'white'}}>Se connecter</Text>
             </TouchableOpacity>
         </View>
     );
