@@ -8,7 +8,9 @@ export default function Index() {
             <Text style={[TextStyles.h1, {
                 paddingVertical: 20,
                 color: "white",
-                textShadow: "2px 2px 8px rgba(0, 0, 0, 0.8)"
+                textShadowColor: "rgba(0, 0, 0, 0.8)",
+                textShadowOffset: { width: 2, height: 2 },
+                textShadowRadius: 8
             }]}>Bienvenue cher agriculteur !</Text>
         </PageLayout>
     );

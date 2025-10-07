@@ -8,7 +8,7 @@ const Contacts = () => {
 
     return (
         <PageLayout style={styles.main}>
-            <View style={{backgroundColor: "white"}}>
+            <View style={styles.first}>
                 <View style={[styles.email]}>
                     <EmailIcon/>
                     <Text>contact@agricultury.com</Text>
@@ -28,8 +28,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        gap: 20,
-        backgroundColor: "red"
+        gap: 20
     },
     email: {
         flexDirection: "row",
@@ -37,5 +36,18 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         gap: 10,
         backgroundColor: "white",
+    },
+    first: {
+        backgroundColor: "white",
+        height: 300,
+        width: 300,
+        borderRadius: 8,
+        justifyContent: "center",
+        shadowOpacity: 0.5,
+        shadowOffset: {
+            width: 0,
+            height: 4
+        },
+        shadowRadius: 4,
     }
 })
