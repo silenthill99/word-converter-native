@@ -13,7 +13,7 @@ const PageLayout = ({children, style}: PropsWithChildren<PageLayoutProps>) => {
     return (
         <SafeAreaView style={styles.parent}>
             <View style={styles.header}>
-                <Text style={[TextStyles.h1, {color: "white"}]}>Agricultury</Text>
+                <Text style={[TextStyles.h1, {color: "white", textAlignVertical: "center"}]}>Agricultury</Text>
             </View>
             <ImageBackground
                 style={[styles.main, style]}
@@ -32,7 +32,8 @@ const styles = StyleSheet.create({
         backgroundColor: colors.mainColor,
     },
     header: {
-        height: 41,
+        minHeight: 41,
+        paddingVertical: 20,
         justifyContent: "center",
         boxShadow: "0 4px 5px rgba(0, 0, 0, 0.25)",
         zIndex: 50
