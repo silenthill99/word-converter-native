@@ -32,11 +32,13 @@ const NewParcel = () => {
             />
             <Text>Description</Text>
             <TextInput
+                multiline
+                blurOnSubmit={false}
                 style={[styles.input, {height: 293, justifyContent: "flex-start"}]}
                 placeholder={"Courte description"}
                 placeholderTextColor={"#c9c3c3"}
             />
-            <TouchableOpacity>Valider</TouchableOpacity>
+            <TouchableOpacity style={styles.button}>Valider</TouchableOpacity>
         </View>
     );
 };
@@ -64,6 +66,15 @@ const styles = StyleSheet.create({
     },
     title: {
         textAlign: "center",
+    },
+    button: {
+        backgroundColor: "black",
+        color: "white",
+        width: 226,
+        height: 54,
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 8
     }
 })
 

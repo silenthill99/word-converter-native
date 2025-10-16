@@ -7,7 +7,7 @@ import {Ionicons} from "@expo/vector-icons";
 const Contacts = () => {
 
     return (
-        <PageLayout style={styles.main}>
+        <PageLayout style={styles.main }>
             <View style={styles.first}>
                 <View style={[styles.email]}>
                     <EmailIcon/>
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        gap: 20
+        gap: 20,
     },
     email: {
         flexDirection: "row",

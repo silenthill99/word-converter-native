@@ -9,7 +9,7 @@ export default function Index() {
             <Text style={[TextStyles.h1, styles.title]}>Bienvenue cher agriculteur !</Text>
             <View style={styles.mainContainer}>
                 <View style={styles.container}>
-                    <Text>12345</Text>
+                    <Text style={TextStyles.h3}>Toutes vos parcelles réunies en un seul endroit !</Text>
                 </View>
                 <View style={styles.container}>
                     <NewParcel/>

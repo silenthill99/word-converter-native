@@ -12,7 +12,7 @@ interface PageLayoutProps {
 const PageLayout = ({children, style}: PropsWithChildren<PageLayoutProps>) => {
     return (
         <SafeAreaView style={styles.parent}>
-            <ScrollView>
+            <ScrollView contentContainerStyle={{flexGrow: 1}}>
                 <View style={styles.header}>
                     <Text style={[TextStyles.h1, {color: "white", textAlignVertical: "center"}]}>Agricultury</Text>
                 </View>
@@ -42,7 +42,6 @@ const styles = StyleSheet.create({
         zIndex: 50
     },
     main: {
-        minHeight: '100%',
         backgroundColor: "#fafafa"
     },
 })
