@@ -1,6 +1,6 @@
 import React, {PropsWithChildren} from 'react';
 import {SafeAreaView} from "react-native-safe-area-context";
-import {StyleProp, StyleSheet, Text, View, ViewStyle} from "react-native";
+import {ScrollView, StyleProp, StyleSheet, Text, View, ViewStyle} from "react-native";
 import {colors} from "@/hook/Colors";
 import {TextStyles} from "@/hook/TextStyles";
 import {ImageBackground} from "expo-image";
@@ -12,16 +12,19 @@ interface PageLayoutProps {
 const PageLayout = ({children, style}: PropsWithChildren<PageLayoutProps>) => {
     return (
         <SafeAreaView style={styles.parent}>
-            <View style={styles.header}>
-                <Text style={[TextStyles.h1, {color: "white", textAlignVertical: "center"}]}>Agricultury</Text>
-            </View>
-            <ImageBackground
-                style={[styles.main, style]}
-                source={require("@/assets/images/agriculture.jpg")}
-                contentFit="cover"
-            >
-                {children}
-            </ImageBackground>
+            <ScrollView>
+                <View style={styles.header}>
+                    <Text style={[TextStyles.h1, {color: "white", textAlignVertical: "center"}]}>Agricultury</Text>
+                </View>
+                <ImageBackground
+                    style={[styles.main, style]}
+                    source={require("@/assets/images/agriculture.jpg")}
+                    contentFit="cover"
+                    imageStyle={{height: '100%'}}
+                >
+                    {children}
+                </ImageBackground>
+            </ScrollView>
         </SafeAreaView>
     );
 };
@@ -39,8 +42,8 @@ const styles = StyleSheet.create({
         zIndex: 50
     },
     main: {
-        flex: 1,
-        backgroundColor: "#fafafa",
+        minHeight: '100%',
+        backgroundColor: "#fafafa"
     },
 })
 

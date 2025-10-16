@@ -109,17 +109,14 @@
 - Appelle `logout()` du contexte d'authentification
 - Style : texte rouge qui se souligne au survol
 
-### 🔧 En cours : Redirection après déconnexion
-**Ce qui fonctionne :**
+### ✅ Redirection après déconnexion (CORRIGÉ)
+**Système de déconnexion complet et fonctionnel :**
 - ✅ API backend `/logout` accessible et fonctionnelle
 - ✅ Méthode `logout()` dans `apiService.ts` correcte (appelle l'API + supprime le token local)
 - ✅ Token correctement supprimé après déconnexion
 - ✅ État `isAuthenticated` passe bien à `false` dans le contexte
 - ✅ Navigation conditionnelle implémentée dans `app/_layout.tsx` avec `useSegments`
-
-**Ce qui ne fonctionne pas :**
-- ❌ Redirection vers la landing page après déconnexion
-- L'utilisateur reste bloqué dans `(tabs)` même après déconnexion
+- ✅ **Redirection vers la landing page après déconnexion fonctionnelle**
 
 **Fichiers modifiés pendant cette session :**
 - `config/api.ts` : ajout de l'endpoint LOGOUT
@@ -129,9 +126,29 @@
 - `app/index.tsx` : suppression du useEffect de redirection (géré par _layout maintenant)
 - `app/(tabs)/_layout.tsx` : nettoyé (plus de useEffect de redirection)
 
-## 📋 À faire demain :
-- **Résoudre le problème de redirection après déconnexion**
-  - Le token est bien supprimé
-  - L'état `isAuthenticated` est bien mis à jour
-  - Mais la navigation vers `/` ne fonctionne pas depuis `(tabs)`
-  - Peut-être essayer une approche différente (Redirect component, navigation guards, etc.)
+### ✅ Système de scroll implémenté dans PageLayout
+- **PageLayout.tsx** rendu scrollable :
+  - `ScrollView` ajouté pour englober le header et l'ImageBackground (ligne 15-26)
+  - Modification du style `main` : `flex: 1` → `minHeight: '100%'` (ligne 45)
+  - Ajout de `imageStyle={{height: '100%'}}` sur ImageBackground pour étirer correctement l'image de fond (ligne 23)
+  - Import de `ScrollView` depuis `react-native` (ligne 3)
+
+- **home.tsx** mis à jour :
+  - Style `height` ajouté au PageLayout (ligne 8) pour définir la hauteur scrollable
+  - Style `position: "absolute"` ajouté au titre (ligne 40) pour le positionnement
+
+**Résultat** :
+- ✅ Les pages utilisant PageLayout sont maintenant scrollables
+- ✅ Le contenu peut dépasser la hauteur de l'écran
+- ✅ Le ScrollView fonctionne correctement avec des hauteurs définies
+
+**Fichiers modifiés** :
+- `layouts/PageLayout.tsx` (ajout ScrollView + modification styles)
+- `app/(tabs)/home.tsx` (ajout style height)
+
+## 🎉 Système d'authentification et navigation complètement fonctionnels
+- ✅ Login/Register avec gestion des tokens
+- ✅ Persistance de session avec AsyncStorage
+- ✅ Navigation conditionnelle entre landing page et app
+- ✅ Déconnexion avec redirection automatique vers la landing page
+- ✅ ScrollView implémenté dans PageLayout pour contenu défilable
