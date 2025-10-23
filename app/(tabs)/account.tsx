@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import PageLayout from "@/layouts/PageLayout";
 import {StyleSheet, Text, Pressable, View} from "react-native";
 import { useAuth } from "@/contexts/AuthContext";
+import Circle from "@/components/icons/Circle";
 
 const Account = () => {
 
@@ -16,13 +17,18 @@ const Account = () => {
     return (
         <PageLayout style={{flex: 1}}>
             <View style={styles.mainView}>
-                <Pressable
-                    onHoverIn={() => setHovered(true)}
-                    onHoverOut={() => setHovered(false)}
-                    onPress={handleLogout}
-                >
-                    <Text style={[styles.buttonText, isHovered && styles.buttonTextHovered]}>Se déconnecter</Text>
-                </Pressable>
+                <View style={{flex: 1, borderRightWidth: 1, borderColor: "#ddd"}}>
+                    <Pressable
+                        onHoverIn={() => setHovered(true)}
+                        onHoverOut={() => setHovered(false)}
+                        onPress={handleLogout}
+                    >
+                        <Text style={[styles.buttonText, isHovered && styles.buttonTextHovered]}>Se déconnecter</Text>
+                    </Pressable>
+                </View>
+                <View style={{flex: 5, padding: 10}}>
+                    <Circle/>
+                </View>
             </View>
         </PageLayout>
     );
@@ -38,6 +44,7 @@ const styles = StyleSheet.create({
     mainView: {
         flex: 1,
         backgroundColor: "white",
+        flexDirection: "row",
     }
 })
 

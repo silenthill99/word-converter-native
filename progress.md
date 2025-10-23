@@ -152,3 +152,49 @@
 - ✅ Navigation conditionnelle entre landing page et app
 - ✅ Déconnexion avec redirection automatique vers la landing page
 - ✅ ScrollView implémenté dans PageLayout pour contenu défilable
+
+### ✅ Composant NewParcel créé
+- **NewParcel.tsx** : Formulaire de création de parcelle (ligne 1-104)
+  - Gestion d'état avec `useState` pour les champs (nom, surface_in_ha, description)
+  - Méthode `handleSubmit()` qui :
+    - Récupère le token avec `ApiService.getToken()`
+    - Envoie une requête POST vers `/parcelle` avec Authorization Bearer token
+    - Utilise `Content-Type: application/json`
+  - Formulaire avec 3 champs :
+    - Nom (TextInput)
+    - Surface en hectares (TextInput avec keyboardType="numeric")
+    - Description (TextInput multiline avec hauteur 293px)
+  - Bouton "Valider" avec style noir
+  - Styles : input avec bordure arrondie, ombre, padding
+
+**Fichier créé** :
+- `components/NewParcel.tsx`
+
+### ✅ Composant Circle (icône SVG) créé
+- **Circle.tsx** : Icône cercle SVG (ligne 1-30)
+  - Utilise `react-native-svg` (Svg, Circle, G, Defs)
+  - Cercle gris (#dddddd) de 94.19mm x 94.19mm
+  - ViewBox "0 0 94.191666 94.191666"
+  - Rayon de 47.095833mm
+
+**Fichier créé** :
+- `components/icons/Circle.tsx`
+- `assets/images/cercle.svg` (asset SVG source)
+
+### ✅ Page Account mise à jour avec icône Circle
+- **account.tsx** mis à jour (ligne 1-52) :
+  - Import et affichage du composant `Circle` dans la page
+  - Layout avec `flexDirection: "row"` :
+    - Colonne gauche (flex: 1) : bouton de déconnexion avec bordure droite
+    - Colonne droite (flex: 5) : affichage du cercle SVG avec padding
+  - Style `mainView` avec fond blanc et flexDirection row
+
+**Fichier modifié** :
+- `app/(tabs)/account.tsx` (ajout du composant Circle + restructuration layout)
+
+## 🎉 Fonctionnalités complètes
+- ✅ Système d'authentification complet (login/register/logout)
+- ✅ Gestion des tokens et persistance de session
+- ✅ Navigation conditionnelle automatique
+- ✅ Formulaire de création de parcelle avec authentification
+- ✅ Page Account avec icône SVG et bouton de déconnexion

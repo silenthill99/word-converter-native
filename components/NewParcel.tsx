@@ -1,14 +1,34 @@
 import React, {useState} from 'react';
 import {StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import {TextStyles} from "@/hook/TextStyles";
+import ApiService from "@/services/apiService";
 
 const NewParcel = () => {
 
     const [value, setValue] = useState({
         name: "",
-        surface_in_ha: 0
+        surface_in_ha: 0,
+        description: "",
     });
 
+    const handleSubmit = () => {
+        ApiService.getToken()
+            .then(token => {
+                return fetch("https://devflorian.cornillet.com/parcelle", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify(value)
+                })
+            })
+            .then(res => res.json())
+            .then(data => console.log("Parcelle créée : " + data))
+            .catch(err => console.error("Erreur : " + err));
+    }
+
+    // noinspection XmlDeprecatedElement
     return (
         <View style={styles.main}>
             <Text style={[TextStyles.h3, styles.title]}>Ajouter une parcelle</Text>
@@ -27,7 +47,7 @@ const NewParcel = () => {
                 placeholderTextColor={"#c9c3c3"}
                 keyboardType={"numeric"}
                 inputMode={"decimal"}
-                value={value.surface_in_ha.toString()}
+                value={value.surface_in_ha?.toString() || "0"}
                 onChangeText={(text) => setValue({...value, surface_in_ha: parseFloat(text) || 0})}
             />
             <Text>Description</Text>
@@ -37,8 +57,12 @@ const NewParcel = () => {
                 style={[styles.input, {height: 293, justifyContent: "flex-start"}]}
                 placeholder={"Courte description"}
                 placeholderTextColor={"#c9c3c3"}
+                value={value.description}
+                onChangeText={(text) => setValue({...value, description: text})}
             />
-            <TouchableOpacity style={styles.button}>Valider</TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+                <Text style={{color: "white"}}>Valider</Text>
+            </TouchableOpacity>
         </View>
     );
 };
