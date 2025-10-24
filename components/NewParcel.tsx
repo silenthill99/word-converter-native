@@ -12,8 +12,10 @@ const NewParcel = () => {
     });
 
     const handleSubmit = () => {
+        console.log("Données envoyées:", JSON.stringify(value, null, 2));
         ApiService.getToken()
             .then(token => {
+                console.log("Token reçu:", token);
                 return fetch("https://devflorian.cornillet.com/parcelle", {
                     method: "POST",
                     headers: {
@@ -23,8 +25,26 @@ const NewParcel = () => {
                     body: JSON.stringify(value)
                 })
             })
-            .then(res => res.json())
-            .then(data => console.log("Parcelle créée : " + data))
+            .then(res => {
+                console.log("Status:", res.status);
+                console.log("Headers:", res.headers);
+                return res.text();
+            })
+            .then(text => {
+                console.log("Réponse brute:", text);
+                try {
+                    const data = JSON.parse(text);
+                    console.log("Réponse parsée:", data);
+                    if (data.success) {
+                        alert("Parcelle créée avec succès !");
+                    } else {
+                        alert("Erreur: " + data.error);
+                    }
+                } catch (e) {
+                    console.error("Erreur de parsing JSON:", e);
+                    console.error("Texte reçu:", text);
+                }
+            })
             .catch(err => console.error("Erreur : " + err));
     }
 

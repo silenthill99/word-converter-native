@@ -198,3 +198,97 @@
 - ✅ Navigation conditionnelle automatique
 - ✅ Formulaire de création de parcelle avec authentification
 - ✅ Page Account avec icône SVG et bouton de déconnexion
+
+---
+
+## Session : Résolution problème d'insertion des parcelles
+
+### ❌ Problème initial : Les parcelles ne s'insèrent pas en base de données
+- Erreur CORS : `Access-Control-Allow-Origin` manquant
+- Token JWT invalide lors de la validation
+- Données JSON non parsées correctement côté backend
+- Header `Authorization` non passé au script PHP
+
+### ✅ Solution 1 : Configuration CORS dans .htaccess (Backend)
+**Fichier modifié** : `C:\Users\User\Code\tuto-slimphp\public\.htaccess`
+- Ajout des en-têtes CORS (lignes 7-13) :
+  ```apache
+  <IfModule mod_headers.c>
+      Header always set Access-Control-Allow-Origin "*"
+      Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+      Header always set Access-Control-Allow-Headers "X-Requested-With, Content-Type, Accept, Origin, Authorization"
+      Header always set Access-Control-Allow-Credentials "true"
+  </IfModule>
+  ```
+- Gestion des requêtes OPTIONS (preflight CORS) avec RewriteCond (lignes 18-20)
+
+### ✅ Solution 2 : Passage du header Authorization (Backend)
+**Fichier modifié** : `C:\Users\User\Code\tuto-slimphp\app\routes.php` (lignes 112-129)
+- Parsing du JSON : `$data = $request->getParsedBody(); $_POST = $data ?? [];`
+- Passage explicite du header Authorization à `$_SERVER['HTTP_AUTHORIZATION']`
+- Permet au script `store.php` d'accéder au token JWT
+
+### ✅ Solution 3 : Clé secrète JWT hardcodée (Backend)
+**Fichier modifié** : `C:\Users\User\Code\tuto-slimphp\app\auth\JwtManager.php` (lignes 15-20)
+- **Problème** : La clé secrète était différente entre la génération du token (login) et la validation (création parcelle)
+  - Login : utilisait `$_ENV['JWT_SECRET']` (non défini → clé par défaut)
+  - Création parcelle : utilisait aussi `$_ENV['JWT_SECRET']` mais avec une valeur potentiellement différente
+- **Solution** : Hardcoder la clé secrète pour garantir la cohérence
+  ```php
+  $this->secretKey = 'my-super-secret-jwt-key-2024-florian';
+  ```
+- **Important** : Nécessite de se déconnecter/reconnecter pour obtenir un nouveau token généré avec la nouvelle clé
+
+### ✅ Solution 4 : Chargement des variables d'environnement (Backend)
+**Fichier modifié** : `C:\Users\User\Code\tuto-slimphp\public\index.php` (lignes 15-16)
+- Ajout de `require __DIR__ . '/../config/env.php';`
+- Permet de charger les variables d'environnement au démarrage (même si non utilisées actuellement)
+
+### ✅ Solution 5 : Amélioration du logging et debug (Backend)
+**Fichier modifié** : `C:\Users\User\Code\tuto-slimphp\app\parcelle\store.php`
+- Ajout de logs détaillés :
+  - `error_log("POST data: " . print_r($_POST, true));` (ligne 10)
+  - `error_log("Authorization header: " . $authHeader);` (ligne 23)
+  - Logs lors de la validation du token (succès/échec)
+  - `error_log("Parcelle créée avec succès - ID: " . $parcelId);` (ligne 65)
+- Messages d'erreur plus détaillés avec `debug_post` et `debug_server`
+- Retour de l'ID de la parcelle créée dans la réponse JSON
+
+**Fichier modifié** : `C:\Users\User\Code\tuto-slimphp\app\auth\JwtManager.php`
+- Logs détaillés lors de la validation du token (lignes 39-51) :
+  - Clé secrète utilisée (premiers 10 caractères)
+  - Messages d'erreur spécifiques (token expiré, signature invalide, autre erreur)
+
+### ✅ Solution 6 : Amélioration du logging côté Frontend
+**Fichier modifié** : `C:\Users\User\Desktop\Stage\word-converter\components\NewParcel.tsx` (lignes 14-49)
+- Logs détaillés :
+  - Données envoyées : `console.log("Données envoyées:", JSON.stringify(value, null, 2));`
+  - Token reçu : `console.log("Token reçu:", token);`
+  - Status et headers de la réponse
+  - Réponse brute avant parsing JSON
+  - Réponse parsée
+- Gestion des erreurs de parsing JSON avec try/catch
+- Affichage d'alertes pour informer l'utilisateur (succès/échec)
+
+### 📋 Fichiers modifiés (Backend - à déployer sur https://devflorian.cornillet.com)
+1. `public/.htaccess` - Configuration CORS
+2. `public/index.php` - Chargement des variables d'environnement
+3. `app/routes.php` - Parsing JSON + passage du header Authorization
+4. `app/parcelle/store.php` - Logs détaillés + messages d'erreur améliorés
+5. `app/auth/JwtManager.php` - Clé secrète hardcodée + logs de validation
+
+### 📋 Fichiers modifiés (Frontend)
+1. `components/NewParcel.tsx` - Logs détaillés + gestion d'erreurs améliorée
+
+### 🎉 RÉSULTAT : Insertion de parcelles fonctionnelle !
+- ✅ CORS configuré et fonctionnel
+- ✅ Données JSON correctement parsées côté backend
+- ✅ Header Authorization passé et utilisé pour valider le token
+- ✅ Token JWT validé avec succès
+- ✅ Parcelles insérées dans la base de données
+- ✅ Logs détaillés pour faciliter le debug
+
+### ⚠️ Points importants
+- **Token JWT** : Expire après 24 heures → nécessite de se reconnecter
+- **Clé secrète JWT** : Hardcodée à `'my-super-secret-jwt-key-2024-florian'`
+- **Reconnexion obligatoire** : Après changement de la clé secrète JWT, il faut se déconnecter/reconnecter pour obtenir un nouveau token valide
